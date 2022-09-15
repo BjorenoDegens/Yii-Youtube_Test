@@ -2,12 +2,14 @@
 
 namespace app\models;
 
+use app\models\query\UsersQuery;
 use Faker\Provider\Image;
 use Imagine\Image\Box;
 use Yii;
 use yii\base\Exception;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\helpers\FileHelper;
 
 /**
@@ -103,28 +105,28 @@ class Video extends \yii\db\ActiveRecord
     /**
      * Gets query for [[owner]].
      *
-     * @return \yii\db\ActiveQuery|\app\models\query\UsersQuery
+     * @return ActiveQuery|UsersQuery
      */
     public function getOwner()
     {
         return $this->hasOne(Accounts::class, ['id' => 'created_by']);
     }
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getViews()
     {
         return $this->hasMany(VideoView::class, ['video_id' => 'video_id']);
     }
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getLikes()
     {
         return $this->hasMany(VideoLike::class, ['video_id' => 'video_id'])->liked();
     }
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDislikes()
     {

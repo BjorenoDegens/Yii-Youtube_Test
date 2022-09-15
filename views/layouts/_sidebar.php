@@ -10,6 +10,14 @@ echo \yii\bootstrap5\Nav::widget([
                 [
                     'label' => 'Upload', 'url' => ['/video/create']
 
+                ],
+                [
+                     'label' => 'History', 'url' => ['/video/history']
+
+                ],
+                [
+                     'label' => 'Myvideos', 'url' => ['/video/myvideos']
+
                 ]
         ]
         ]);

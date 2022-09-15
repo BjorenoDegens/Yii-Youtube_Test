@@ -2,14 +2,19 @@
 
 namespace app\controllers;
 
+use app\models\Subscriber;
 use app\models\Video;
+use app\models\VideoView;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\debug\models\timeline\DataProvider;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+
 
 /**
  * VideoController implements the CRUD actions for Video model.
@@ -24,6 +29,7 @@ class VideoController extends Controller
           return  [
                 'access' => [
                     'class' => AccessControl::class,
+                    'only' => ['history'],
                     'rules' => [
                         [
                             'allow' => true,
@@ -48,23 +54,49 @@ class VideoController extends Controller
     public function actionIndex()
     {
         $this ->layout = 'auth';
-        $dataProvider = new ActiveDataProvider([
-            'query' => Video::find()->latest(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'video_id' => SORT_DESC,
-                ]
-            ],
-            */
+        $user = Yii::$app->user->identity;
+        $userID = $user->id;
+        $latestVideo = Video::find()
+            ->latest()
+            ->creator($userID)
+            ->one();
+        $numberOfViews = VideoView::find()
+            ->alias('vv')
+            ->innerJoin(Video::tableName() . 'v',
+            'v.video_id = vv.video_id')
+            ->andWhere(['v.created_by' => $userID])
+            ->count();
+        $numberOfSubscribers = $user
+            ->getSubscribers()
+            ->count();
+        $subscribers = Subscriber::find()
+            ->with('user')
+            ->andWhere([
+                'channel_id' => $userID
+            ])
+            ->orderBy('created_at DESC' )
+        ->limit(3)->all();
+
+        return $this->render('index',[
+        'latestVideo' => $latestVideo,
+        'numberOfViews' => $numberOfViews,
+        'numberOfSubscribers' => $numberOfSubscribers,
+        'subscribers' => $subscribers,
+            ]);
+    }
+
+    public function actionMyvideos()
+    {
+        $this->layout = 'auth';
+        $user = Yii::$app->user->identity;
+        $userID = $user->id;
+        $getMyVideos = Video::find()
+            ->creator($userID)
+            ->one();
+        return $this->render('myvideos',[
+            'getMyVideos' => $getMyVideos
         ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
     }
 
     /**
@@ -128,8 +160,27 @@ class VideoController extends Controller
     public function actionDelete($video_id)
     {
         $this->findModel($video_id)->delete();
-
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionHistory(){
+        $this->layout = 'auth';
+        $query = Video::find()
+            ->alias('v')
+            ->innerJoin("(SELECT video_id, MAX(created_at) as max_date FROM video_view
+            WHERE user_id = :userID
+            GROUP BY video_id) vv",'vv.video_id = v.video_id',['userID' => Yii::$app->user->id])
+            ->orderBy("vv.max_date DESC");
+
+        $dataProvider = new  ActiveDataProvider([
+            'query' => $query
+        ]);
+        return $this->render('history', [
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**

@@ -37,7 +37,8 @@ use yii\bootstrap5\ActiveForm;
         </div>
             <div class="col-sm-4">
                 <div class="embed-responsive embed-responsive-16by9 mb-3">
-                    <video style="width:360px; height:180px" poster="<?php echo $model->getThumbnailLink() ?>" class="embed-responsive-item" src="<?php echo $model->getVideoLink() ?>" controls></video>
+                    <video style="width:360px; height:180px" poster="<?php echo $model->getThumbnailLink() ?>"
+                           class="embed-responsive-item" src="<?php echo $model->getVideoLink() ?>" controls></video>
                 </div>
                 <div class="mb-3">
                     <div class="text-muted"> Video Link</div>
