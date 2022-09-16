@@ -85,19 +85,7 @@ class VideoController extends Controller
             ]);
     }
 
-    public function actionMyvideos()
-    {
-        $this->layout = 'auth';
-        $user = Yii::$app->user->identity;
-        $userID = $user->id;
-        $getMyVideos = Video::find()
-            ->creator($userID)
-            ->one();
-        return $this->render('myvideos',[
-            'getMyVideos' => $getMyVideos
-        ]);
 
-    }
 
     /**
      * Displays a single Video model.
@@ -197,5 +185,23 @@ class VideoController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @return string
+     *
+     */
+    public function actionMyvideos()
+    {
+        $this->layout = 'auth';
+        $user = Yii::$app->user->identity;
+        $userID = $user->id;
+        $getMyVideos = Video::find()
+            ->creator($userID)
+            ->all();
+        return $this->render('myvideos',[
+            'getMyVideos' => $getMyVideos
+        ]);
+
     }
 }

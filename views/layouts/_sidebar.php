@@ -16,7 +16,7 @@ echo \yii\bootstrap5\Nav::widget([
 
                 ],
                 [
-                     'label' => 'Myvideos', 'url' => ['/video/myvideos']
+                     'label' => 'My videos', 'url' => ['/video/myvideos']
 
                 ]
         ]

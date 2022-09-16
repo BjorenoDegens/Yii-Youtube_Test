@@ -8,7 +8,6 @@ use app\models\Video;
 use app\models\VideoLike;
 use app\models\VideoView;
 use Yii;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\debug\panels\EventPanel;
 use yii\filters\AccessControl;
