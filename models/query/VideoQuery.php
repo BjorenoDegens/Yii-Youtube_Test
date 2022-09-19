@@ -33,6 +33,7 @@ class VideoQuery extends \yii\db\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+
     }
 
     public function creator($userID)

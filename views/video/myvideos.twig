@@ -1,0 +1,27 @@
+
+{{ set(this, 'title', 'MyVideos')}}
+{{ Html.encode(this.title) }}
+
+<h1>{{ this.title }}</h1>
+
+<div class="d-flex flex-row flex-wrap">
+    {% for getMyVideo in getMyVideos %}
+    <div class="card m-2" style="width: 18rem;">
+        <div class="embed-responsive embed-responsive-16by9 mb-3">
+            <video style="width:285px; height:150px" poster="{{ getMyVideo.getThumbnailLink }}"
+                   class="embed-responsive-item"
+                   src="{{ getMyVideo.getVideoLink }}">
+            </video>
+        </div>
+        <div class="card-body">
+            <h6 class="card-title"> {{ getMyVideo.title }} </h6>
+            <p class="card-text">
+                likes:{{ getMyVideo.getLikes.count }}
+                    <br>
+                views:{{ getMyVideo.getViews.count }}
+            </p>
+            <a href="{{ url("/video/update",{ 'video_id' : getMyVideo.video_id}) }}" class="btn btn-primary">Edit</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>

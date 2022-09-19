@@ -29,11 +29,17 @@ class VideoController extends Controller
           return  [
                 'access' => [
                     'class' => AccessControl::class,
-                    'only' => ['history'],
+                    'only' => ['history','index'],
                     'rules' => [
                         [
                             'allow' => true,
+                            'actions' => ['history', 'index'],
                             'roles' => ['@']
+                        ],
+                        [
+                           'allow' => false,
+                           'actions' => ['index'],
+                            'roles' => ['?']
                         ]
                         ]
                 ],
@@ -199,7 +205,7 @@ class VideoController extends Controller
         $getMyVideos = Video::find()
             ->creator($userID)
             ->all();
-        return $this->render('myvideos',[
+        return $this->render('myvideos.twig',[
             'getMyVideos' => $getMyVideos
         ]);
 

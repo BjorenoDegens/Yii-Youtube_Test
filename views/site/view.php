@@ -3,6 +3,7 @@
  * @var $model Video
  * @var $similarVideos Video[]
  */
+
 use app\models\Video;
 use yii\helpers\Url;
 
